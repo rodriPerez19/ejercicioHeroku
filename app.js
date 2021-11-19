@@ -40,14 +40,18 @@ const multerConfig= multer.diskStorage({
 const multerMiddle =multer({storage:multerConfig})
 
 app.post("/registro/usuario",multerMiddle.single("imgFile"),(req,res)=>{
+    let nombre= req.body.nombre;
+    let mail= req.body.email;
+    let pass= req.body.pass;
 
+    let user={"email":mail, "name":nombre, "password":pass};
+    users.push(user);
     if(req.file){
-        res.send("imagen guardada")
+        res.send("usuario guardado")
     }
     else{
-        res.send("error al cargar la imagen posiblemente no fue recibida")
+        res.send("error al crear un usuario, falta imagen")
     }
-
 })
 
 app.get("/",(req,res)=>{
