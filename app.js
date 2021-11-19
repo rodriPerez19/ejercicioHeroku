@@ -39,7 +39,7 @@ const multerConfig= multer.diskStorage({
 
 const multerMiddle =multer({storage:multerConfig})
 
-app.post("/user/storage",multerMiddle.single("imgFile"),(req,res)=>{
+app.post("/registro/usuario",multerMiddle.single("imgFile"),(req,res)=>{
 
     if(req.file){
         res.send("imagen guardada")
