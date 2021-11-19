@@ -8,6 +8,7 @@ const Express= require("express");
 const cors= require("cors");
 const path= require("path");
 const methodOverride =require("method-override");
+const multer = require("multer")
 
 const app= Express();
 const log= console.log;
@@ -23,6 +24,31 @@ app.use(Express.urlencoded({extended:true}))
 app.use(methodOverride());
 
 
+
+const multerConfig= multer.diskStorage({
+    destination:function(res,file,cb){
+        cb(null,"./bucket")// aca puede ser cualquier nombre de carpeta, esta es la carpeta de destino
+    },
+    filename:function(res,file,cb){
+        let idImage=uuid().split("-")[0];//con esto genero un id random
+        let day= dayjs().format('DD-MM-YYYY') //esto me da la fecha en el formato q le indico
+        cb(null,`${day}.${idImage}.${file.originalname}`);//el file originalname, me toma el nombre q tiene el archivos en mi computadora
+                                                    //es decir yo tengo una img llamada auto.jpg, me lo guarda con ese nombre tb en mi carpeta
+    },
+});
+
+const multerMiddle =multer({storage:multerConfig})
+
+app.post("/user/storage",multerMiddle.single("imgFile"),(req,res)=>{
+
+    if(req.file){
+        res.send("imagen guardada")
+    }
+    else{
+        res.send("error al cargar la imagen posiblemente no fue recibida")
+    }
+
+})
 
 app.get("/",(req,res)=>{
     res.sendFile(path.join(__dirname,"/views/index.html"))
